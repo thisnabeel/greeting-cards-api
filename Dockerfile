@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1
-FROM ruby:2.5.7
+FROM ruby:2.5.7-bullseye
 
 RUN apt-get update -qq && \
     apt-get install -y nodejs postgresql-client && \
