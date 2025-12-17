@@ -1,0 +1,42 @@
+
+<%= form_tag charges_path do %>
+  <div id="error_explanation">
+    <% if flash[:error].present? %>
+      <p><%= flash[:error] %></p>
+    <% end %>
+  </div>
+	
+	<h1>$<span class="total-cost"><%= @product.price * @product.minimum %></span></h1>
+	<h3>Order Now:</h3>
+
+  <br>
+  <p>Requests (optional):</p>
+  <textarea name="requests" class="form-control"></textarea>
+  <br>
+
+  <input type="number" name="product_id" value="<%= @product.id %>" class="hidden">
+    <span class="btn btn-pink btn-lg btn-block buy-now">
+		Place Order
+	</span>
+  <div class="stripe-it hide">
+  <script
+    src="https://checkout.stripe.com/checkout.js" class="stripe-button"
+    data-key="<%= Rails.configuration.stripe[:publishable_key] %>"
+    data-name="<%= @product.title %>"
+    data-description="2 widgets ($20.00)"
+    data-amount="<%= @product.price * 100 %>">
+  </script>
+  </div>
+<% end %>
+
+<hr>
+
+<script>
+	$(".buy-now").on("click", function(){
+		$(".stripe-it").find("button").trigger("click");
+	});
+
+	$(".quantity").bind('input', function(){
+		$(".total-cost").html($(this).val() * <%= @product.price %>);
+	})
+</script>

@@ -1,0 +1,90 @@
+<style>
+    label {
+        font-weight: bold;
+        font-size: 30px;
+        margin-top: 20px;
+    }
+</style>
+
+<h1>Editing Product</h1>
+
+<hr>
+
+
+<label>Title:</label>
+<input type="text" class="form-control" name="title" value="<%= @product.title %>" />
+
+
+<label>Image Url:</label>
+<input type="text" class="form-control" name="image_url" value="<%= @product.image_url %>" />
+
+
+
+<label>Description:</label>
+<textarea class="form-control" name="description" value="<%= @product.description %>"></textarea>
+
+<label>Price:</label>
+<input type="number" class="form-control" name="price" value="<%= @product.price %>" />
+
+<label>Minimum:</label>
+<input type="number" class="form-control" name="minimum" value="<%= @product.minimum %>" />
+
+<label>Maximum:</label>
+<input type="number" class="form-control" name="maximum" value="<%= @product.maximum %>" />
+
+
+<label>Group Size:</label>
+<input type="number" class="form-control" name="group_size" value="<%= @product.group_size %>" />
+
+<label>Category:</label>
+<select name="category_id" id="" class="form-control">
+    <% Category.all.each do |category| %>
+        <option <%= 'selected' if @product.category_id == category.id %>  value="<%= category.id %>"><%= category.title %></option>
+    <% end %>
+</select>
+
+<script>
+var placeholderTypeWatchOptions = {
+    callback: function (value) { 
+        saveProduct()
+    },
+    wait: 750,
+    highlight: true,
+    allowSubmit: false,
+    captureLength: 0
+}
+
+$("[name]").typeWatch( placeholderTypeWatchOptions );
+$("body").on("change", "select", function(){
+    saveProduct()
+})
+
+
+function saveProduct(){
+
+    hash = {}
+    hash["_method"] = "post"
+    $("input, select, textarea").each(function(){
+        hash[$(this).attr("name")] = $(this).val()
+    })
+    
+    $.ajax({
+        type: "PUT",
+        dataType: "json",
+        url: '/products/<%= @product.id %>',
+        contentType: 'application/json',
+        data: JSON.stringify(hash),
+        success: function(res){
+            console.log(res)
+        }
+    })
+}
+
+</script>
+
+<hr>
+
+
+
+<%= link_to 'Show', @product %> |
+<%= link_to 'Back', products_path %>

@@ -1,0 +1,27 @@
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+<script>
+    $("body").on("click", ".collect-phone", function(){
+        
+
+        const { value: number } = Swal.fire({
+            title: 'Phone Number',
+            input: 'text',
+            inputLabel: 'We need your phone number so we can call you when your order is ready.',
+            inputValue: '',
+            showCancelButton: true,
+            inputValidator: (value) => {
+                if (!value) {
+                    return 'We need your phone number!'
+                }
+
+                // alert(value)
+                metadata = {
+                    phone_number: value,
+                }
+                goCheckout(metadata)
+            }
+        })
+
+    })
+</script>

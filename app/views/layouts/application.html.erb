@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Wikky's</title>
+  <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
+  <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
+  <%= csrf_meta_tags %>
+
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css">
+      <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+      />
+</head>
+<body class="<%= 'mobile' if browser.device.mobile? %>">
+
+<style>
+  .logo {
+    /* position: absolute; */
+    margin: 0 auto;
+    display: block;
+    max-width: 300px;
+    padding: 30px;
+    padding-bottom: 10px;
+    top: 0;
+    left: 0%;
+    right: 0%;
+    text-align: center;
+    margin: 0 auto;
+  }
+
+  .logo img {
+    max-width: 100%;
+  }
+</style>
+
+<div class="border">
+
+  <a class="logo" href="/"><img class="" src="<%= asset_path('logo.png') %>" alt=""></a>
+
+  <div class="container">
+    <p id="notice"><%= notice %></p>
+    <%= yield %>
+  </div>
+
+</div>
+
+<div class="border-bottom"></div>
+<div class="border-right"></div>
+<div class="border-left"></div>
+
+<%= render "pages/contact" %>
+<%= render "pages/about" %>
+
+<% if browser.device.mobile? %>
+  <%= render "cart/mobile_cart" %>
+<% else %>
+  <%= render "cart/cart" %>
+<% end %>
+
+<script>
+  $(".open-modal").on("click", function(){
+    $("#"+$(this).attr("data-title")+"Modal").modal("show")
+  })
+
+  var perfEntries = performance.getEntriesByType("navigation");
+
+  if (perfEntries[0].type === "back_forward") {
+      location.reload(true);
+  }
+
+</script>
+
+</body>
+</html>

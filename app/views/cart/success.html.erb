@@ -1,0 +1,34 @@
+<h2><i class="fa fa-envelope"></i> <%= @sale.email %></h2>
+<h2><i class="fa fa-phone"></i> <%= @sale.phone_number %></h2>
+<hr>
+<h1>$<%= (@sale.amount.to_f * 0.01).to_i %></h1>
+<hr>
+
+
+        <ul class="invoice-list" style="padding:0; list-style:none;">
+            
+            <% JSON.parse(@invoice)["products"].each_with_index do |p, index| %>
+                <li>
+                    
+                    <div class="cph">
+                        <div class="cp-head">
+                            <span class="cp-cost">
+                                $<%= p["cost"] %> <i class="fa fa-arrow-right"></i>
+                            </span>
+                            <span class="cp-quantity">
+                                <%= p["quantity"] %>x
+                            </span>
+                            <span class="cp-title">
+                                <%= p["title"] %>
+                            </span>
+                        </div>
+
+                    </div>
+
+
+                    <span class="cp-requests" count="<%= p["requests"].length %>">
+                        <%= p["requests"] %>
+                    </span>
+                </li>
+            <% end %>
+        </ul>

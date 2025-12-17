@@ -1,0 +1,149 @@
+<style>
+  
+  .spinner {
+    width: 119px;
+    margin: 0 auto;
+  }
+
+  .btn-group button {
+    font-size: 20px;
+  }
+
+  input#amount {
+    width: 77px;
+    text-align: center;
+    background-color: #9866a9;
+    color: #fff;
+    display: block;
+    font-size: 26px;
+  }
+
+  .ncrg {
+    color: #ee7785;
+  }
+
+  .buy-now {
+    /* display: none; */
+  }
+</style>
+
+<%= form_tag charges_path do %>
+  <div id="error_explanation">
+    <% if flash[:error].present? %>
+      <p><%= flash[:error] %></p>
+    <% end %>
+  </div>
+	 
+   <h3>How Many?</h3>
+
+   <div class="spinner">
+<!-- 		<input type="number" id="amount" name="quantity" class="form-control" min="<%= @product.minimum %>" value="<%= @product.minimum %>" pattern="\d*"/> -->
+<div class="btn-group" role="group" aria-label="Basic example" data-grp="<%= @product.group_size if @product.group_size.present? %>">
+  <button type="button" class="btn btn-info minus-one">-</button>
+  <button type="button" class="btn btn-primary quantity-count"><%= @product.minimum %></button>
+  <button type="button" class="btn btn-info plus-one">+</button>
+</div>
+
+    </div>
+
+  <hr>
+
+	<h1 class="usd-cost">$<span class="total-cost"><%= @product.price * @product.minimum %></span></h1>
+
+  <p class="requests-label">Requests (optional):</p>
+  <textarea name="requests" class="form-control"></textarea>
+  <br>
+
+  <%= hidden_field_tag(:stripeToken) %>
+  <%= hidden_field_tag(:stripeEmail) %>
+  <%= hidden_field_tag(:quantity) %>
+
+  <input type="number" name="product_id" value="<%= @product.id %>" class="hidden">
+    <span class="btn btn-pink btn-lg btn-block buy-now">
+		  Add To Cart
+	  </span>
+  </div>
+<% end %>
+
+<hr>
+
+
+<script>
+
+  changeTotal = function(){
+    count = parseInt($(".quantity-count").html())
+    $(".total-cost").html(count * <%= @product.price %>);
+    $('input#quantity').val(parseInt($(".quantity-count").html()));
+  }
+
+
+  changeTotal()
+
+  $(".plus-one").on("click", function(){
+    current = parseInt($(".quantity-count").html())
+    grp = parseInt($(".btn-group").attr("data-grp"))
+    new_count = current + grp
+    $(".quantity-count").html(new_count)
+    changeTotal()
+  })
+
+  $(".minus-one").on("click", function(){
+    current = parseInt($(".quantity-count").html())
+    grp = parseInt($(".btn-group").attr("data-grp"))
+    new_count = current - grp
+    if (new_count > <%= @product.minimum - 1 %>) {
+      $(".quantity-count").html(new_count)
+      changeTotal()
+    }
+  })
+
+  // $("input#amount").bind('input', function(){
+  //  $(".total-cost").html($(this).val() * <%= @product.price %>);
+  // })
+
+
+
+  $("body").on("click", ".buy-now", function(){
+      cost = $(".total-cost").html()
+    
+      $.ajax({
+          type: "POST",
+          dataType: "json",
+          url: '/configure/cart',
+          contentType: 'application/json',
+          data: JSON.stringify({ 
+            config: "add_product",
+            product_id: <%= @product.id %>,
+            quantity: parseInt($(".quantity-count").html()),
+            requests: $("textarea[name='requests']").val(),
+            cost: cost,
+            title: "<%= @product.title %>",
+            _method:'post' 
+          }),
+          success: function(res){
+            console.log(res)
+            cart = res["cart"]
+            populateCart(cart)
+          }
+      })
+  })
+
+
+  $( ".phone-number" ).on("keyup", function( event ) {
+    if ( $(".phone-number").val().length > 6 ) {
+      btnVisibility(true)
+    } else {
+      btnVisibility(false)
+    }
+  });
+
+  function btnVisibility(bool){
+    console.log(bool)
+    if (bool) {
+      $(".buy-now").show()
+    } else {
+      $(".buy-now").hide()
+    }
+  }
+</script>
+

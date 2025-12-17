@@ -1,0 +1,10 @@
+<h1><%= @sale.email %></h1>
+<hr>
+<h3>$<%= @sale.amount %></h3>
+<hr>
+<p>
+	<%= @sale.requests %>
+</p>
+
+<%= link_to 'Edit', edit_sale_path(@sale) %> |
+<%= link_to 'Back', sales_path %>

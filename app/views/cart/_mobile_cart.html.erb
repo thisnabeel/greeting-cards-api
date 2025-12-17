@@ -1,0 +1,272 @@
+<style>
+    .cart {
+        position: fixed;
+        bottom: 0;
+        right: 0;
+        display: block;
+        width: 100%;
+    }
+    
+
+    .cart-button {
+        width: 100%;
+        height: 8vh;
+        /* margin-bottom: 69px; */
+    }
+
+    .inner-cart-btn {
+        position: static;
+        width: 100%;
+        height: 100%;
+        right: 0px;
+        padding: 0.45em;
+        font-size: 4em;
+        text-align: center;
+        background: #8E2DE2;
+        background: -webkit-linear-gradient(to right, #4A00E0, #8E2DE2);
+        background: linear-gradient(to right, #4A00E0, #8E2DE2);
+        color: #fff;
+    }
+
+    .cart-view {
+        position: fixed;
+        top: 0;
+        background: #fff;
+        font-size: 4em;
+        width: 100%;
+        height: 100vh;
+        display: none;
+        
+    }
+
+    .cart-view h1 {
+        font-size: 2em;
+        padding: 0.5em;
+    }
+
+    .cart-list {
+        <% if session["cart"].present? && session["cart"]["products"].length > 0 %>
+            display: block;
+        <% else %>
+            display: none;
+        <% end %>
+
+
+        background: #fff;
+        list-style: none;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        padding-left: 100px;
+        padding-right: 100px;
+    }
+
+    .cart-list > li,
+    .invoice-list > li {
+        border-radius: 20px;
+        box-shadow: 0px 1px 5px -1px rgb(254 164 127);
+        position: relative;
+        border-radius: 10px;
+        
+    }
+
+    .cart-list > li:hover .cp-remove {
+        color: #000;
+    }
+
+
+    .cp-remove {
+        position: absolute;
+        left: -72px;
+        top: 26px;
+        color: #ccc;
+    }
+
+    .cp-quantity {
+        font-weight: bold;
+    }
+
+    .cp-head {
+        padding: 13px;
+    }
+
+    .cp-requests {
+        display: block;
+        background: #c84352;
+        color: #fff;
+        padding: 13px;
+        border-radius: 0 0 10px 10px;
+    }
+
+    .cp-requests[count="0"]{
+        display: none;
+    }
+
+    .checkout {
+        position: relative;
+        left: 20px;
+        top: 18px;
+        float: right;
+        font-size: 52px;
+        padding: 30px;
+        border-radius: 20px;
+    }
+
+    .checkout[data-total="0"]{
+        display: none;
+    }
+</style>
+
+    <script src="https://js.stripe.com/v3/"></script>
+
+
+<aside class="cart">
+    <% check_cart %>
+    <section class="cart-button toggle-cart">
+        <div class="inner-cart-btn">
+            <span class="fa fa-shopping-cart"></span> $<span class="cart-cost"><%= session["cart"]["total"] || 0 %></span>
+        </div>
+    </section>
+        <div class="cart-view">
+            <h1><div class="fa fa-arrow-left toggle-cart"></div> Cart: <div class="btn btn-primary checkout collect-phone" data-total="<%= session["cart"]["total"] || 0 %>">Pay $<span class="cart-cost"><%= session["cart"]["total"] || 0 %></span> <i class="fa fa-arrow-right"></i></div></h1>
+            <ul class="cart-list">
+            
+            <% session["cart"]["products"].each_with_index do |p, index| %>
+                <li>
+                    <span class="fa fa-remove remove-cp cp-remove" data-index="<%= index %>"></span>
+                    
+                    <div class="cph">
+                        <div class="cp-head">
+                            <span class="cp-cost">
+                                $<%= p["cost"] %> <i class="fa fa-arrow-right"></i>
+                            </span>
+                            <span class="cp-quantity">
+                                <%= p["quantity"] %>x
+                            </span>
+                            <span class="cp-title">
+                                <%= p["title"] %>
+                            </span>
+                        </div>
+
+                    </div>
+
+
+                    <span class="cp-requests" count="<%= p["requests"].length %>">
+                        <%= p["requests"] %>
+                    </span>
+                </li>
+            <% end %>
+            </ul>
+        </div>
+</aside>
+
+<script>
+
+    $("body").on("click", ".remove-cp", function(){
+
+
+        $.ajax({
+            type: "POST",
+            dataType: "json",
+            url: '/configure/cart',
+            contentType: 'application/json',
+            data: JSON.stringify({ 
+                config: "remove_product",
+                index: $(this).attr("data-index"),
+                _method:'post' 
+            }),
+            success: function(res){
+                console.log(res)
+                cart = res["cart"]
+                populateCart(cart)
+            }
+        })
+        
+    })
+
+    function populateCart(cart){
+        $(".cart-cost").html(cart["total"])
+        $(".checkout").attr("data-total",cart["total"])
+
+        $(".cart-list").empty()
+        if (cart["products"].length < 1){
+            $(".cart-list").hide()
+            return
+        } else {
+            $(".cart-list").show()
+        }
+        $.each(cart["products"], function(index, p){
+            $(".cart-list").append(
+                `
+                    <li>
+                        <span class="fa fa-remove remove-cp cp-remove" data-index="`+ index +`"></span>
+                        <div class="cp-head">
+                            <span class="cp-cost">
+                                $`+ p["cost"] +` <i class="fa fa-arrow-right"></i>
+                            </span>
+                            <span class="cp-quantity">
+                                `+ p["quantity"] +`x
+                            </span>
+                            <span class="cp-title">
+                                `+ p["title"] +`
+                            </span>
+                        </div>
+                        <span class="cp-requests" count="`+p["requests"].length+`">
+                            `+ p["requests"] +`
+                        </span>
+                    </li>
+                `
+            )
+        })
+    }
+
+
+    // 
+
+      // Create an instance of the Stripe object with your publishable API key
+      var stripe = Stripe('pk_test_51HtY9uBq7aAGJ0GIzpH9nzpU6EzTy1InfF2tyz7T1FeHQC0cNlL2raRnBkrtLGzcEKekZkRbCwMrBsmYyycINXHd00YOzk7lSo');
+      var checkoutButton = document.getElementById('checkout-button');
+
+      function goCheckout(metadata){
+
+        var stripe = Stripe('<%= ENV["STRIPE_PUBLISHABLE_KEY"] %>');
+
+        var elements = stripe.elements();
+
+        $.ajax({
+            type: "POST",
+            dataType: "json",
+            url: '/cart/checkout',
+            contentType: 'application/json',
+            data: JSON.stringify({ 
+                metadata: metadata,
+                _method:'post' 
+            }),
+            success: function(res){
+            console.log(res)
+            stripe.redirectToCheckout({
+                // Make the id field from the Checkout Session creation API response
+                // available to this file, so you can provide it as parameter here
+                // instead of the {{CHECKOUT_SESSION_ID}} placeholder.
+                sessionId: res["session"]["id"]
+            }).then(function (result) {
+                // If `redirectToCheckout` fails due to a browser or network
+                // error, display the localized error message to your customer
+                // using `result.error.message`.
+            });
+            }
+        })
+
+
+      };
+
+
+    $("body").on("click", ".toggle-cart", function(){
+        $(".cart-view").slideToggle()
+        $(".inner-cart-btn .fa").toggleClass("fa-shopping-cart fa-arrow-left")
+    })
+
+
+</script>
+
+<%= render "cart/phone" %>

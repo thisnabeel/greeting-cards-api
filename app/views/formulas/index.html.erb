@@ -1,0 +1,31 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Listing Formulas</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Title</th>
+      <th>Position</th>
+      <th>Product</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @formulas.each do |formula| %>
+      <tr>
+        <td><%= formula.title %></td>
+        <td><%= formula.position %></td>
+        <td><%= formula.product_id %></td>
+        <td><%= link_to 'Show', formula %></td>
+        <td><%= link_to 'Edit', edit_formula_path(formula) %></td>
+        <td><%= link_to 'Destroy', formula, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Formula', new_formula_path %>

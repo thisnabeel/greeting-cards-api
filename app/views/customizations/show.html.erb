@@ -1,0 +1,39 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Title:</strong>
+  <%= @customization.title %>
+</p>
+
+<p>
+  <strong>Description:</strong>
+  <%= @customization.description %>
+</p>
+
+<p>
+  <strong>Choices:</strong>
+  <%= @customization.choices %>
+</p>
+
+<p>
+  <strong>Cost:</strong>
+  <%= @customization.cost %>
+</p>
+
+<p>
+  <strong>Position:</strong>
+  <%= @customization.position %>
+</p>
+
+<p>
+  <strong>Product:</strong>
+  <%= @customization.product_id %>
+</p>
+
+<p>
+  <strong>Active:</strong>
+  <%= @customization.active %>
+</p>
+
+<%= link_to 'Edit', edit_customization_path(@customization) %> |
+<%= link_to 'Back', customizations_path %>

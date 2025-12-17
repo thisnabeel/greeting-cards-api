@@ -1,0 +1,34 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Generic:</strong>
+  <%= @material.generic %>
+</p>
+
+<p>
+  <strong>Specific:</strong>
+  <%= @material.specific %>
+</p>
+
+<p>
+  <strong>Cost:</strong>
+  <%= @material.cost %>
+</p>
+
+<p>
+  <strong>Makes:</strong>
+  <%= @material.makes %>
+</p>
+
+<p>
+  <strong>Position:</strong>
+  <%= @material.position %>
+</p>
+
+<p>
+  <strong>Formula:</strong>
+  <%= @material.formula_id %>
+</p>
+
+<%= link_to 'Edit', edit_material_path(@material) %> |
+<%= link_to 'Back', materials_path %>

@@ -1,0 +1,80 @@
+
+<style>
+	.shopfront img {
+		width: 350px;
+		margin: 0 auto;
+	}
+
+	.btn-pink {
+		background-color :#ee7785;
+		color: #fff;
+		transition: 1s;
+	}
+
+	.btn-pink:hover {
+		background-color :#da4e5e;
+		color: #fff;
+
+	}
+
+	.btn a,.btn a:hover,.btn a:visited,.btn a:focus {
+		color: #fff;
+	}
+
+	form {
+		background-color: #ffdbdb;
+    	padding: 25px;
+	}
+
+	form h1, h3 {
+		color: rgba(102, 45, 145, 0.67);
+		text-align: center;
+	}
+
+	.shopfront {
+		max-width: 350px;
+		margin: 0 auto;
+	}
+
+	.description {
+		text-align: left;
+		padding: 10px 10px;
+		border: 1px solid #000;
+		margin: 10px 0;
+	}
+
+</style>
+
+
+<div class="shopfront show-product">
+
+<ol class="breadcrumb">
+  <li class="breadcrumb-item"><a href="/"><%= @product.category.title %></a></li>
+  <li class="breadcrumb-item active"><%= @product.title %></li>
+</ol>
+
+	<img src="<%= @product.image_url %>" class="img-responsive" alt="">
+<h1 class="product-title">
+	<%= @product.title.gsub(/\(/, "<br>(").html_safe %>
+</h1>
+
+<% if @product.description.present? %>
+	<section class="description product-description">
+		<%= @product.description.html_safe %>
+	</section>
+<% end%>
+
+<% if @product.minimum && @product.minimum > 0 %>
+	<%= render "products/with_quantity"%>
+<% else %>
+	<%= render "products/solo"%>
+<% end %>
+
+
+<% if admin_signed_in? %>
+	<hr>
+	<%= link_to 'Edit', edit_product_path(@product) %> |
+	<%= link_to 'Back', products_path %>
+<% end %>
+
+</div>
