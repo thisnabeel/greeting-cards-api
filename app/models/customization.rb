@@ -1,3 +1,3 @@
 class Customization < ActiveRecord::Base
-    belongs_to :customizations
+    belongs_to :product
 end

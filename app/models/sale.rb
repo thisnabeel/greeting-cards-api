@@ -1,6 +1,6 @@
 class Sale < ActiveRecord::Base
   before_save :populate_guid
-  validates_uniqueness_of :guid
+  validates :guid, uniqueness: true
 
   serialize :invoice
 
