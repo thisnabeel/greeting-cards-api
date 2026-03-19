@@ -17,3 +17,6 @@
 /tmp
 config/application.yml
 /config/application.yml
+
+# Bundled gems should never be committed.
+vendor/bundle/
