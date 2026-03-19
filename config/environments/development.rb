@@ -63,4 +63,9 @@ Rails.application.configure do
 
   # Raise error when a before_action's only/except options reference missing actions.
   config.action_controller.raise_on_missing_callback_actions = true
+
+  # Allow Railway domains when the app is (accidentally) running in development.
+  # This prevents Rack::HostAuthorization from rejecting requests with 403.
+  config.hosts << "greeting-cards-api-production.up.railway.app"
+  config.hosts << /.*\.up\.railway\.app/
 end
