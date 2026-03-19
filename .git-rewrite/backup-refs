@@ -1,0 +1,5 @@
+f4ccf325b0a97260b0cfd608807273cf54d804c3 commit	refs/heads/backup/pre-vendor-bundle-cleanup
+f4ccf325b0a97260b0cfd608807273cf54d804c3 commit	refs/heads/main
+0ff1d6ac71d5dad788d5713601f2bd6d319b519b commit	refs/remotes/origin/HEAD
+0ff1d6ac71d5dad788d5713601f2bd6d319b519b commit	refs/remotes/origin/main
+f0dd576fe2e4b38d86704f7d01472be4881122a7 commit	refs/stash

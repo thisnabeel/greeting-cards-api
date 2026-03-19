@@ -1,6 +1,19 @@
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 
+  # Full URLs in JSON (Active Storage proxy, `category_url`, etc.) need a public host.
+  # Set DEFAULT_URL_HOST on Railway if your API hostname changes (e.g. custom domain).
+  default_url_host = ENV.fetch("DEFAULT_URL_HOST", "greeting-cards-api-production.up.railway.app")
+  config.default_url_options = { host: default_url_host, protocol: "https" }
+  config.action_controller.default_url_options = { host: default_url_host, protocol: "https" }
+  config.action_mailer.default_url_options = { host: default_url_host, protocol: "https" }
+
+  # Active Storage / route helpers read from the route set in some code paths.
+  config.after_initialize do
+    Rails.application.routes.default_url_options[:host] = default_url_host
+    Rails.application.routes.default_url_options[:protocol] = "https"
+  end
+
   # Code is not reloaded between requests.
   config.enable_reloading = false
 
