@@ -8,7 +8,9 @@ Rails.application.routes.draw do
   devise_for :admins
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
-  resources :products
+  resources :products do
+    resource :greeting_card, only: [:show, :create, :update]
+  end
   resources :sales
 
   resources :charges, only: [:create]
@@ -17,8 +19,12 @@ Rails.application.routes.draw do
   get  '/thanks/:guid',   to: 'charges#thanks',   as: :thanks
 
   post '/cart/checkout' => 'cart#checkout'
+  post '/cart/inquire' => 'cart#inquire'
+  get '/cart/inquiries' => 'cart#inquiries'
   post '/configure/cart' => 'cart#configure'
   post '/create_payment_intent' => 'cart#create_payment_intent'
+
+  get '/greeting_cards/import_candidates' => 'greeting_cards#import_candidates'
 
   get '/success/:session_id' => "cart#success"
 

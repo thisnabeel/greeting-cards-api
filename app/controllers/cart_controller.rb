@@ -2,6 +2,39 @@ class CartController < ApplicationController
 
     skip_before_action :verify_authenticity_token
 
+    def inquire
+        input = params[:inquiry] || {}
+        email = input[:email] || input['email']
+        phone = input[:phone] || input['phone']
+        total = input[:total] || input['total'] || 0
+        cart = input[:cart] || input['cart'] || []
+        message = input[:message] || input['message']
+
+        cart = cart.is_a?(Array) ? cart : []
+        cart = cart.map do |line|
+            line.respond_to?(:to_unsafe_h) ? line.to_unsafe_h : line
+        end
+
+        inquiry = CartInquiry.new(
+            email: email.to_s.strip,
+            phone: phone.to_s.strip,
+            total: total.to_d,
+            message: message.to_s.strip,
+            cart: cart
+        )
+
+        if inquiry.save
+            render json: serialize_inquiry(inquiry), status: :created
+        else
+            render json: { errors: inquiry.errors.full_messages }, status: :unprocessable_entity
+        end
+    end
+
+    def inquiries
+        list = CartInquiry.order(created_at: :desc).limit(200)
+        render json: list.map { |i| serialize_inquiry(i) }
+    end
+
     def configure
         # session["cart"] = false
         if session["cart"].present?
@@ -209,6 +242,19 @@ class CartController < ApplicationController
         }
     end
 
+    private
 
+    def serialize_inquiry(inquiry)
+        {
+            id: inquiry.id,
+            email: inquiry.email,
+            phone: inquiry.phone,
+            total: inquiry.total,
+            status: inquiry.status,
+            message: inquiry.message,
+            cart: inquiry.cart,
+            created_at: inquiry.created_at
+        }
+    end
 
 end
