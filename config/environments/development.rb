@@ -68,4 +68,7 @@ Rails.application.configure do
   # This prevents Rack::HostAuthorization from rejecting requests with 403.
   config.hosts << "greeting-cards-api-production.up.railway.app"
   config.hosts << /.*\.up\.railway\.app/
+
 end
+
+# End of development environment configuration.
