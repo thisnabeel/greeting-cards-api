@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_19_000001) do
+ActiveRecord::Schema[8.1].define(version: 2026_07_22_120000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -77,6 +77,18 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_19_000001) do
     t.integer "product_id"
     t.string "title"
     t.datetime "updated_at", precision: nil, null: false
+  end
+
+  create_table "designs", force: :cascade do |t|
+    t.float "base_offset_x", default: 0.0, null: false
+    t.float "base_offset_y", default: 0.0, null: false
+    t.float "base_scale", default: 1.0, null: false
+    t.datetime "created_at", null: false
+    t.integer "height", default: 1920, null: false
+    t.jsonb "layers", default: [], null: false
+    t.string "name", default: "Untitled", null: false
+    t.datetime "updated_at", null: false
+    t.integer "width", default: 1080, null: false
   end
 
   create_table "formulas", id: :serial, force: :cascade do |t|

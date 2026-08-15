@@ -11,6 +11,13 @@ Rails.application.routes.draw do
   resources :products do
     resource :greeting_card, only: [:show, :create, :update]
   end
+
+  resources :designs, only: [:index, :show, :create, :update, :destroy] do
+    member do
+      post :duplicate
+    end
+  end
+
   resources :sales
 
   resources :charges, only: [:create]
